@@ -21,7 +21,7 @@ interface BearState {
   image: File | null
   setImage: (image: File | null) => void
 
-  addTask: (todo: string, columnId: TypedColumn, image?: File | null) => void
+  addTask: (todo: string, columnId: TypedColumn, image?: File | null) => Promise<void>
 }
 
 export const useBoardStore = create<BearState>((set, get) => ({

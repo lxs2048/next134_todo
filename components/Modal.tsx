@@ -1,17 +1,20 @@
 'use client'
-import { FormEvent, Fragment, useRef } from 'react'
+import { FormEvent, Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useModalStore } from '@/store/ModalStore'
 import { useBoardStore } from '@/store/BoardStore'
 import TaskTypeRadioGroup from './TaskTypeRadioGroup'
 import Image from 'next/image'
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { ScaleLoader } from 'react-spinners'
 
 function Modal() {
   const imagePickerRef = useRef<HTMLInputElement>(null)
-  const [isOpen, closeModal] = useModalStore((state) => [
+  const [isOpen, closeModal, loading, setLoading] = useModalStore((state) => [
     state.isOpen,
     state.closeModal,
+    state.loading,
+    state.setLoading,
   ])
   const [newTaskType, newTaskInput, setNewTaskInput, image, setImage, addTask] =
     useBoardStore((state) => [
@@ -22,9 +25,12 @@ function Modal() {
       state.setImage,
       state.addTask,
     ])
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    addTask(newTaskInput, newTaskType, image)
+    if (loading) return
+    setLoading(true)
+    await addTask(newTaskInput, newTaskType, image)
+    setLoading(false)
     closeModal()
   }
 
@@ -112,9 +118,17 @@ function Modal() {
                   <button
                     type="submit"
                     disabled={!newTaskInput}
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
+                    className="inline-flex justify-center items-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
                   >
                     添加任务
+                    {loading && (
+                      <ScaleLoader
+                        color={'#1E3A8A'}
+                        loading={true}
+                        height={10}
+                        width={4}
+                      />
+                    )}
                   </button>
                 </div>
               </Dialog.Panel>
