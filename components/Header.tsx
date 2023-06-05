@@ -10,6 +10,7 @@ import { useBoardStore } from '@/store/BoardStore'
 import { useEffect, useState } from 'react'
 import { fetchSuggestion } from '@/lib/fetchSuggestion'
 import Link from 'next/link'
+import { useDebounceFn } from 'ahooks'
 function Header() {
   const [board, searchString, setSearchString] = useBoardStore((state) => [
     state.board,
@@ -18,15 +19,24 @@ function Header() {
   ])
   const [loading, setLoading] = useState(false)
   const [suggestion, setSuggestion] = useState('')
+  const fetchSuggestionFunc = async () => {
+    const suggestion = await fetchSuggestion(board)
+    setSuggestion(suggestion)
+    setLoading(false)
+  }
+
+  const { run } = useDebounceFn(
+    () => {
+      fetchSuggestionFunc()
+    },
+    {
+      wait: 2000,
+    }
+  )
   useEffect(() => {
     if (board.columns.size === 0) return
     setLoading(true)
-    const fetchSuggestionFunc = async () => {
-      const suggestion = await fetchSuggestion(board)
-      setSuggestion(suggestion)
-      setLoading(false)
-    }
-    fetchSuggestionFunc()
+    run()
   }, [board])
   return (
     <header>
