@@ -11,9 +11,9 @@ type Props = {
 const idToColumnText: {
   [key in TypedColumn]: string
 } = {
-  todo: 'To Do',
-  inprogress: 'In Progress',
-  done: 'Done',
+  todo: '未开始',
+  inprogress: '进行中',
+  done: '已完成',
 }
 
 function Column({ id, todos, index }: Props) {
@@ -35,7 +35,7 @@ function Column({ id, todos, index }: Props) {
           ref={provided.innerRef}
         >
           <div className="bg-white/50 p-2 rounded-2xl shadow-sm">
-            <h2 className="flex justify-between font-bold text-xl p-2">
+            <h2 className="flex justify-between font-bold text-sm p-2">
               {idToColumnText[id]}
               <span className="text-gray-500 bg-gray-200 rounded-full px-2 py-1 text-sm font-normal">
                 {!searchString

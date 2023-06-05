@@ -1,5 +1,4 @@
 'use client'
-import Image from 'next/image'
 import {
   MagnifyingGlassIcon,
   QueueListIcon,
@@ -55,13 +54,13 @@ function Header() {
             <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
             <input
               type="text"
-              placeholder="Search"
+              placeholder="搜索"
               value={searchString}
               onChange={(e) => setSearchString(e.target.value)}
               className="flex-1 outline-none p-2"
             />
             <button type="submit" hidden>
-              Search
+              搜索
             </button>
           </form>
           <Avatar name="刘" size="45" round color="#0055D1" />
