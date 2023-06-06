@@ -18,10 +18,10 @@ interface BearState {
   setNewTaskInput: (newTaskInput: string) => void
   newTaskType: TypedColumn
   setNewTaskType: (id: TypedColumn) => void
-  image: File | null
-  setImage: (image: File | null) => void
+  image: ImageFile | null
+  setImage: (image: ImageFile | null) => void
 
-  addTask: (todo: string, columnId: TypedColumn, image?: File | null) => Promise<void>
+  addTask: (todo: string, columnId: TypedColumn, image?: ImageFile | null) => Promise<void>
 }
 
 export const useBoardStore = create<BearState>((set, get) => ({
@@ -73,10 +73,11 @@ export const useBoardStore = create<BearState>((set, get) => ({
   addTask: async (todo, columnId, image) => {
     let file: Image | undefined
     const fileUploaded = await uploadImage(image)
-    if (fileUploaded) {
+    if (fileUploaded && image) {
       file = {
         bucketId: fileUploaded.bucketId,
-        fileId: fileUploaded.$id
+        fileId: fileUploaded.$id,
+        meta: image.meta
       }
     }
     const { $id } = await databases.createDocument(

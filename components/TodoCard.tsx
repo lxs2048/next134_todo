@@ -2,7 +2,7 @@
 import { getUrl } from '@/lib/getUrl'
 import { useBoardStore } from '@/store/BoardStore'
 import { XCircleIcon } from '@heroicons/react/24/solid'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import {
   DraggableProvidedDraggableProps,
@@ -15,6 +15,7 @@ type Props = {
   innerRef: (element: HTMLElement | null) => void
   draggableProps: DraggableProvidedDraggableProps
   dragHandleProps: DraggableProvidedDragHandleProps | null | undefined
+  columnSize?: { width: number; height: number }
 }
 function TodoCard({
   todo,
@@ -23,11 +24,16 @@ function TodoCard({
   innerRef,
   draggableProps,
   dragHandleProps,
+  columnSize,
 }: Props) {
   const [deleteTask] = useBoardStore((state) => [state.deleteTask])
   const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [imageMeta, setImageMeta] = useState<ImgMeta | null>(null)
   useEffect(() => {
     if (todo.image) {
+      if (todo.image.meta) {
+        setImageMeta(todo.image.meta)
+      }
       const fetchImage = async () => {
         const url = await getUrl(todo.image!)
         if (url) {
@@ -37,6 +43,12 @@ function TodoCard({
       fetchImage()
     }
   }, [todo])
+  const imageHight = useMemo(() => {
+    if (imageMeta && columnSize) {
+      return (imageMeta.h * columnSize.width) / imageMeta.w
+    }
+    return 0
+  }, [imageMeta, columnSize])
   return (
     <div
       className="bg-white rounded-md mb-2 drop-shadow-md"
@@ -53,7 +65,7 @@ function TodoCard({
           <XCircleIcon className="ml-5 h-8 w-8" />
         </button>
       </div>
-      {/* add image */}
+      {/* 配置blurDataURL占位 */}
       {imageUrl && (
         <div className="h-full w-full rounded-b-md">
           <Image
@@ -62,6 +74,7 @@ function TodoCard({
             width={400}
             height={200}
             className="w-full object-contain rounded-b-md"
+            style={{ minHeight: imageHight }}
           />
         </div>
       )}

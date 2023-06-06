@@ -3,6 +3,8 @@ import TodoCard from './TodoCard'
 import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import { useBoardStore } from '@/store/BoardStore'
 import { useModalStore } from '@/store/ModalStore'
+import { useSize } from 'ahooks'
+import { useRef } from 'react'
 type Props = {
   id: TypedColumn
   todos: Todo[]
@@ -21,6 +23,8 @@ function Column({ id, todos, index }: Props) {
     state.searchString,
     state.setNewTaskType,
   ])
+  const ColumnRef = useRef(null)
+  const size = useSize(ColumnRef)
   const openModal = useModalStore((state) => state.openModal)
   const handleAddTodo = () => {
     setNewTaskType(id)
@@ -57,34 +61,37 @@ function Column({ id, todos, index }: Props) {
                     snapshot.isDraggingOver ? 'bg-green-200' : 'bg-white/50'
                   }`}
                 >
-                  {todos.map((todo, index) => {
-                    if (
-                      searchString &&
-                      !todo.title
-                        .toLowerCase()
-                        .includes(searchString.toLowerCase())
-                    )
-                      return null
-                    return (
-                      <Draggable
-                        key={todo.$id}
-                        draggableId={todo.$id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <TodoCard
-                            todo={todo}
-                            index={index}
-                            id={id}
-                            innerRef={provided.innerRef}
-                            draggableProps={provided.draggableProps}
-                            dragHandleProps={provided.dragHandleProps}
-                          />
-                        )}
-                      </Draggable>
-                    )
-                  })}
-                  {provided.placeholder}
+                  <div className="w-full h-full" ref={ColumnRef}>
+                    {todos.map((todo, index) => {
+                      if (
+                        searchString &&
+                        !todo.title
+                          .toLowerCase()
+                          .includes(searchString.toLowerCase())
+                      )
+                        return null
+                      return (
+                        <Draggable
+                          key={todo.$id}
+                          draggableId={todo.$id}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <TodoCard
+                              todo={todo}
+                              index={index}
+                              id={id}
+                              innerRef={provided.innerRef}
+                              draggableProps={provided.draggableProps}
+                              dragHandleProps={provided.dragHandleProps}
+                              columnSize={size}
+                            />
+                          )}
+                        </Draggable>
+                      )
+                    })}
+                    {provided.placeholder}
+                  </div>
                 </div>
               )}
             </Droppable>

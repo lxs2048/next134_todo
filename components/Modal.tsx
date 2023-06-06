@@ -1,5 +1,5 @@
 'use client'
-import { FormEvent, Fragment, useRef, useState } from 'react'
+import { ChangeEvent, FormEvent, Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useModalStore } from '@/store/ModalStore'
 import { useBoardStore } from '@/store/BoardStore'
@@ -32,6 +32,24 @@ function Modal() {
     await addTask(newTaskInput, newTaskType, image)
     setLoading(false)
     closeModal()
+  }
+  const handleFileInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files![0].type.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const img = new window.Image()
+      img.src = event.target?.result as string
+      img.onload = () => {
+        setImage({
+          file: e.target.files![0],
+          meta: {
+            w: img.naturalWidth,
+            h: img.naturalHeight,
+          },
+        })
+      }
+    }
+    reader.readAsDataURL(e.target.files![0])
   }
 
   return (
@@ -97,7 +115,7 @@ function Modal() {
                       alt="上传图片"
                       width={200}
                       height={200}
-                      src={URL.createObjectURL(image)}
+                      src={URL.createObjectURL(image.file)}
                       onClick={() => {
                         setImage(null)
                       }}
@@ -108,10 +126,7 @@ function Modal() {
                     type="file"
                     ref={imagePickerRef}
                     hidden
-                    onChange={(e) => {
-                      if (!e.target.files![0].type.startsWith('image/')) return
-                      setImage(e.target.files![0])
-                    }}
+                    onChange={handleFileInputChange}
                   />
                 </div>
                 <div className="mt-4">

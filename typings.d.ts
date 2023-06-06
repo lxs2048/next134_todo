@@ -15,7 +15,17 @@ interface Todo {
     image?: Image
 }
 
+interface ImgMeta {
+    w: number,
+    h: number,
+}
 interface Image {
     bucketId: string
     fileId: string
+    meta: ImgMeta
+}
+
+interface ImageFile {
+    file: File,
+    meta: ImgMeta
 }
