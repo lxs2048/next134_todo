@@ -68,6 +68,7 @@ function TodoCard({
       {/* 配置blurDataURL占位 */}
       {imageUrl && (
         <div className="h-full w-full rounded-b-md">
+          {/* 图片占位 https://png-pixel.com/ */}
           <Image
             src={imageUrl}
             alt="任务图片"
@@ -75,6 +76,8 @@ function TodoCard({
             height={200}
             className="w-full object-contain rounded-b-md"
             style={{ minHeight: imageHight }}
+            placeholder="blur"
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8pZlaDwAE9gHZn0IBQAAAAABJRU5ErkJggg=="
           />
         </div>
       )}
