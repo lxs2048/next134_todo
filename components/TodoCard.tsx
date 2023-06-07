@@ -77,7 +77,7 @@ function TodoCard({
             className="w-full object-contain rounded-b-md"
             style={{ minHeight: imageHight }}
             placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8pZlaDwAE9gHZn0IBQAAAAABJRU5ErkJggg=="
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOs7DioAQAFMAHs+PnY0wAAAABJRU5ErkJggg=="
           />
         </div>
       )}

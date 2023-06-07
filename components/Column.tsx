@@ -58,7 +58,7 @@ function Column({ id, todos, index }: Props) {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                   className={`rounded-md min-h-[72px] ${
-                    snapshot.isDraggingOver ? 'bg-green-200' : 'bg-white/50'
+                    snapshot.isDraggingOver ? 'bg-[#edcee5]' : 'bg-white/50'
                   }`}
                 >
                   <div className="w-full h-full" ref={ColumnRef}>
