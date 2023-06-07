@@ -33,11 +33,24 @@ export const getTodosGroupedByColumn = async () => {
             })
         }
     }
-    const sortedColumns = new Map(
-        Array.from(columns.entries()).sort(
-            (a, b) => columnTypes.indexOf(a[0]) - columnTypes.indexOf(b[0])
+    let sortedColumns: Map<TypedColumn, Column>
+    // 获取localStorage中的排序
+    const sortTag = localStorage.getItem("sortTag")
+    if (sortTag) {
+        const sortTags = JSON.parse(sortTag)
+        sortedColumns = new Map(
+            Array.from(columns.entries()).sort(
+                (a, b) => sortTags.indexOf(a[0]) - sortTags.indexOf(b[0])
+            )
         )
-    )
+    } else {
+        sortedColumns = new Map(
+            Array.from(columns.entries()).sort(
+                (a, b) => columnTypes.indexOf(a[0]) - columnTypes.indexOf(b[0])
+            )
+        )
+        localStorage.setItem("sortTag", JSON.stringify(columnTypes))
+    }
     const board: Board = {
         columns: sortedColumns
     }

@@ -24,6 +24,8 @@ function Board() {
       const entries = Array.from(board.columns.entries())
       const [removed] = entries.splice(source.index, 1)
       entries.splice(destination.index, 0, removed)
+      const sortTag = entries.map(([id]) => id)
+      localStorage.setItem('sortTag', JSON.stringify(sortTag))
       const rearrangedColumns = new Map(entries)
       setBoardState({
         ...board,
