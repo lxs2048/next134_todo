@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { useDebounceFn } from 'ahooks'
 import { signOut } from 'next-auth/react'
 import { Session } from 'next-auth/core/types'
+import SignInButton from './SignInButton'
 type Props = {
   session: Session | null
 }
@@ -43,6 +44,7 @@ function Header(props: Props) {
     setLoading(true)
     run()
   }, [board])
+  console.log(session, '数据😎😎😎session')
   return (
     <header>
       <div className="flex flex-col md:flex-row items-center p-5 rounded-b-2xl">
@@ -69,14 +71,7 @@ function Header(props: Props) {
               搜索
             </button>
           </form>
-          <Avatar
-            className="cursor-pointer"
-            onClick={() => signOut()}
-            name={session?.user?.name!}
-            size="45"
-            round
-            color="#0055D1"
-          />
+          <SignInButton />
         </div>
       </div>
       <div className="flex items-center justify-center px-5 py-3 md:py-5">
