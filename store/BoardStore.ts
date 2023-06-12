@@ -2,6 +2,7 @@ import { ID, databases, storage } from '@/appwrite'
 import { getTodosGroupedByColumn } from '@/lib/getTodosGroupedByColumn'
 import { uploadImage } from '@/lib/uploadImage'
 import { create } from 'zustand'
+import { initBoard } from './util'
 
 interface BearState {
   board: Board
@@ -21,12 +22,16 @@ interface BearState {
   image: ImageFile | null
   setImage: (image: ImageFile | null) => void
 
-  addTask: (todo: string, columnId: TypedColumn, image?: ImageFile | null) => Promise<void>
+  addTask: (
+    todo: string,
+    columnId: TypedColumn,
+    image?: ImageFile | null
+  ) => Promise<void>
 }
 
 export const useBoardStore = create<BearState>((set, get) => ({
   board: {
-    columns: new Map<TypedColumn, Column>()
+    columns: initBoard(),
   },
   getBoard: async () => {
     const board = await getTodosGroupedByColumn()
@@ -40,7 +45,7 @@ export const useBoardStore = create<BearState>((set, get) => ({
       todo.$id,
       {
         title: todo.title,
-        status: columnId
+        status: columnId,
       }
     )
   },
@@ -52,8 +57,8 @@ export const useBoardStore = create<BearState>((set, get) => ({
     newColumns.get(id)?.todos.splice(taskIndex, 1)
     set({
       board: {
-        columns: newColumns
-      }
+        columns: newColumns,
+      },
     })
     if (todo.image) {
       await storage.deleteFile(todo.image.bucketId, todo.image.fileId)
@@ -61,7 +66,7 @@ export const useBoardStore = create<BearState>((set, get) => ({
     await databases.deleteDocument(
       process.env.NEXT_PUBLIC_DATABASE_ID!,
       process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID!,
-      todo.$id,
+      todo.$id
     )
   },
   newTaskInput: '',
@@ -77,7 +82,7 @@ export const useBoardStore = create<BearState>((set, get) => ({
       file = {
         bucketId: fileUploaded.bucketId,
         fileId: fileUploaded.$id,
-        meta: image.meta
+        meta: image.meta,
       }
     }
     const { $id } = await databases.createDocument(
@@ -87,7 +92,7 @@ export const useBoardStore = create<BearState>((set, get) => ({
       {
         title: todo,
         status: columnId,
-        ...(file && { image: JSON.stringify(file) })
+        ...(file && { image: JSON.stringify(file) }),
       }
     )
     set({ newTaskInput: '' })
@@ -101,23 +106,22 @@ export const useBoardStore = create<BearState>((set, get) => ({
         status: columnId,
         $createdAt: new Date().toISOString(),
         $updatedAt: new Date().toISOString(),
-        ...(file && { image: file })
+        ...(file && { image: file }),
       }
       const column = newColumns.get(columnId)
       if (!column) {
         newColumns.set(columnId, {
           id: columnId,
-          todos: [newTodo]
+          todos: [newTodo],
         })
       } else {
         newColumns.get(columnId)?.todos.push(newTodo)
       }
       return {
         board: {
-          columns: newColumns
-        }
+          columns: newColumns,
+        },
       }
-
     })
-  }
+  },
 }))
