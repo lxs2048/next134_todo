@@ -10,7 +10,13 @@ import { useEffect, useState } from 'react'
 import { fetchSuggestion } from '@/lib/fetchSuggestion'
 import Link from 'next/link'
 import { useDebounceFn } from 'ahooks'
-function Header() {
+import { signOut } from 'next-auth/react'
+import { Session } from 'next-auth/core/types'
+type Props = {
+  session: Session | null
+}
+function Header(props: Props) {
+  const { session } = props
   const [board, searchString, setSearchString] = useBoardStore((state) => [
     state.board,
     state.searchString,
@@ -63,7 +69,14 @@ function Header() {
               搜索
             </button>
           </form>
-          <Avatar name="刘" size="45" round color="#0055D1" />
+          <Avatar
+            className="cursor-pointer"
+            onClick={() => signOut()}
+            name={session?.user?.name!}
+            size="45"
+            round
+            color="#0055D1"
+          />
         </div>
       </div>
       <div className="flex items-center justify-center px-5 py-3 md:py-5">

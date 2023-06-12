@@ -2,7 +2,6 @@ import { ID, databases, storage } from '@/appwrite'
 import { getTodosGroupedByColumn } from '@/lib/getTodosGroupedByColumn'
 import { uploadImage } from '@/lib/uploadImage'
 import { create } from 'zustand'
-import { initBoard } from './util'
 
 interface BearState {
   board: Board
@@ -31,7 +30,7 @@ interface BearState {
 
 export const useBoardStore = create<BearState>((set, get) => ({
   board: {
-    columns: initBoard(),
+    columns: new Map<TypedColumn, Column>(),
   },
   getBoard: async () => {
     const board = await getTodosGroupedByColumn()
