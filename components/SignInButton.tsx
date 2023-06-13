@@ -5,9 +5,9 @@ import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames'
 import { ArrowRightOnRectangleIcon, CheckIcon } from '@heroicons/react/24/solid'
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useEffect, useState } from 'react'
+import Avatar from 'react-avatar'
 const COPY_ICON_CLASS = 'cursor-pointer h-4 w-4 text-stone-400'
 const SignInButton = () => {
   const { data: session } = useSession()
@@ -19,20 +19,20 @@ const SignInButton = () => {
   }, [copied])
   return (
     <>
-      {session ? (
-        <Menu as="div" className="relative">
-          <Menu.Button>
-            {session?.user?.image && (
-              <div className="relative h-12 w-12">
-                <Image
-                  src={session.user.image}
-                  alt={session.user.name!}
-                  className="inline-block rounded-full"
-                  fill
-                />
-              </div>
-            )}
-          </Menu.Button>
+      <Menu
+        as="div"
+        className="relative w-[54px] flex items-center justify-center"
+      >
+        <Menu.Button>
+          <Avatar
+            className="cursor-pointer"
+            name={session?.user?.name || 'T'}
+            size="48"
+            round
+            color="#edcee5"
+          />
+        </Menu.Button>
+        {session && (
           <Transition
             enter="transition duration-150 ease-out"
             enterFrom="transform scale-95 opacity-0"
@@ -41,8 +41,16 @@ const SignInButton = () => {
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
           >
-            <Menu.Items className="bg-white absolute right-0 mt-2 flex origin-top-right flex-col rounded-xl py-4 text-white shadow-lg focus:outline-none">
+            <Menu.Items className="bg-white absolute right-0 mt-8 flex origin-top-right flex-col rounded-xl py-4 text-white shadow-lg focus:outline-none">
               <div className="mb-4 flex gap-4 px-6 text-sm">
+                <div className="relative h-10 w-10">
+                  <Image
+                    src={session?.user?.image!}
+                    alt={session?.user?.name!}
+                    className="inline-block rounded-full"
+                    fill
+                  />
+                </div>
                 <div>
                   <p className="font-medium text-stone-600">
                     {session?.user?.name || 'User name'}
@@ -82,15 +90,8 @@ const SignInButton = () => {
               </div>
             </Menu.Items>
           </Transition>
-        </Menu>
-      ) : (
-        <Link
-          className="rounded-md border border-stone-300 px-3 py-1 text-sm dark:border-stone-600"
-          href="/signin?callbackUrl=/"
-        >
-          登录
-        </Link>
-      )}
+        )}
+      </Menu>
     </>
   )
 }

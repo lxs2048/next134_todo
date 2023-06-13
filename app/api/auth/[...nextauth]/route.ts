@@ -10,6 +10,13 @@ export const authOptions = {
   pages: {
     signIn: '/signin',
   },
+  session: {
+    jwt: true,
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
 }
 
 const handler = NextAuth(authOptions)
