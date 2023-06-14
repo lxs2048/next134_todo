@@ -26,7 +26,7 @@ function Header(props: Props) {
   const [loading, setLoading] = useState(false)
   const [suggestion, setSuggestion] = useState('')
   const fetchSuggestionFunc = async () => {
-    const suggestion = await fetchSuggestion(board)
+    const suggestion = await fetchSuggestion(board, session?.user?.name)
     setSuggestion(suggestion)
     setLoading(false)
   }
@@ -44,7 +44,6 @@ function Header(props: Props) {
     setLoading(true)
     run()
   }, [board])
-  console.log(session, '数据😎😎😎session')
   return (
     <header>
       <div className="flex flex-col md:flex-row items-center p-5 rounded-b-2xl">
