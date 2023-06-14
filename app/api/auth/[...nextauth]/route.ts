@@ -1,5 +1,13 @@
-import NextAuth from 'next-auth'
+import { getUserbyEmail, updateUser } from '@/lib/user'
+import NextAuth, { Account, Profile, User } from 'next-auth'
+import { AdapterUser } from 'next-auth/adapters'
 import GithubProvider from 'next-auth/providers/github'
+type callbacksignIn = {
+  user: AdapterUser | User
+  account: Account | null
+  profile?: Profile | undefined
+  email?: { verificationRequest?: boolean | undefined } | undefined
+}
 export const authOptions = {
   providers: [
     GithubProvider({
@@ -16,6 +24,22 @@ export const authOptions = {
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
+  },
+  callbacks: {
+    async signIn(params: callbacksignIn) {
+      try {
+        const { user } = params
+        const { name, email, image } = user
+        if (!email) return false
+        const db_user = await getUserbyEmail(email)
+        if (!db_user) {
+          await updateUser({ name, email, image })
+        }
+      } catch (error) {
+        throw new Error('Error saving user to database')
+      }
+      return true
+    },
   },
 }
 
