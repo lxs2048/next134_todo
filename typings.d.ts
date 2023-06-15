@@ -48,3 +48,10 @@ interface UserBase {
 }
 
 type User = UserBase & AppwriteUserExtension
+
+type MessageInfo = {
+  show: boolean
+  type: 'success' | 'error' | 'warning'
+  title?: stringCommon
+  content: string
+}

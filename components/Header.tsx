@@ -4,15 +4,14 @@ import {
   QueueListIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid'
-import Avatar from 'react-avatar'
 import { useBoardStore } from '@/store/BoardStore'
 import { useEffect, useState } from 'react'
 import { fetchSuggestion } from '@/lib/fetchSuggestion'
 import Link from 'next/link'
 import { useDebounceFn } from 'ahooks'
-import { signOut } from 'next-auth/react'
 import { Session } from 'next-auth/core/types'
 import SignInButton from './SignInButton'
+import Message from './Message'
 type Props = {
   session: Session | null
 }
@@ -25,9 +24,25 @@ function Header(props: Props) {
   ])
   const [loading, setLoading] = useState(false)
   const [suggestion, setSuggestion] = useState('')
+  const [messageInfo, setMessageInfo] = useState<MessageInfo>({
+    show: false,
+    type: 'success',
+    content: 'success',
+  })
   const fetchSuggestionFunc = async () => {
-    const suggestion = await fetchSuggestion(board, session?.user?.name)
-    setSuggestion(suggestion)
+    try {
+      const suggestion = await fetchSuggestion(board, session?.user?.name)
+      setSuggestion(suggestion)
+    } catch (error) {
+      setMessageInfo((state) => {
+        return {
+          ...state,
+          show: true,
+          type: 'error',
+          content: 'gpt查询错误，请重试',
+        }
+      })
+    }
     setLoading(false)
   }
 
@@ -77,13 +92,28 @@ function Header(props: Props) {
         <div className="flex items-center p-5 text-sm font-light pr-5 shadow-xl rounded-xl w-fit bg-white italic max-w-3xl text-[#0055D1]">
           <div>
             <UserCircleIcon
-              className={`inline-block h-10 w-10 text-[#0055D1] mr-1 ${
+              onClick={() => {
+                !loading && setLoading(true)
+                run()
+              }}
+              className={`cursor-pointer inline-block h-10 w-10 text-[#0055D1] mr-1 ${
                 loading && 'animate-spin'
               }`}
             />
           </div>
           {suggestion && !loading ? suggestion : 'GPT正在为您总结今天的任务...'}
         </div>
+        <Message
+          messageInfo={messageInfo}
+          closeFn={() => {
+            setMessageInfo((state) => {
+              return {
+                ...state,
+                show: false,
+              }
+            })
+          }}
+        />
       </div>
     </header>
   )
