@@ -1,6 +1,6 @@
 import { databases, ID, Query } from '@/appwrite'
 
-export const getUserbyEmail = async (email: string): Promise<User | null> => {
+export const getUserByEmail = async (email: string): Promise<User | null> => {
   const data = await databases.listDocuments(
     process.env.NEXT_PUBLIC_DATABASE_ID!,
     process.env.NEXT_PUBLIC_USERS_COLLECTION_ID!,

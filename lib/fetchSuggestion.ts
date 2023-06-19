@@ -10,8 +10,8 @@ export const fetchSuggestion = async (board: Board, name: stringCommon) => {
       },
       body: JSON.stringify({ todos, name }),
     })
-    const GPTdata = await res.json()
-    const { content } = GPTdata
+    const GPTData = await res.json()
+    const { content } = GPTData
     return content
   } catch (error) {
     return ''

@@ -1,8 +1,8 @@
-import { getUserbyEmail, updateUser } from '@/lib/user'
+import { getUserByEmail, updateUser } from '@/lib/user'
 import NextAuth, { Account, Profile, User } from 'next-auth'
 import { AdapterUser } from 'next-auth/adapters'
 import GithubProvider from 'next-auth/providers/github'
-type callbacksignIn = {
+type callbacksParams = {
   user: AdapterUser | User
   account: Account | null
   profile?: Profile | undefined
@@ -26,12 +26,12 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
   },
   callbacks: {
-    async signIn(params: callbacksignIn) {
+    async signIn(params: callbacksParams) {
       try {
         const { user } = params
         const { name, email, image } = user
         if (!email) return false
-        const db_user = await getUserbyEmail(email)
+        const db_user = await getUserByEmail(email)
         if (!db_user) {
           await updateUser({ name, email, image })
         }
