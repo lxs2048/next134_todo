@@ -5,6 +5,13 @@ import { useBoardStore } from '@/store/BoardStore'
 import { useModalStore } from '@/store/ModalStore'
 import { useSize } from 'ahooks'
 import { useRef } from 'react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 type Props = {
   id: TypedColumn
   todos: Todo[]
@@ -96,12 +103,21 @@ function Column({ id, todos, index }: Props) {
               )}
             </Droppable>
             <div className="flex items-end justify-end p-2 mt-2">
-              <button
-                className="text-green-500 hover:text-green-600"
-                onClick={handleAddTodo}
-              >
-                <PlusCircleIcon className="h-10 w-10" />
-              </button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <button
+                      className="text-green-500 hover:text-green-600"
+                      onClick={handleAddTodo}
+                    >
+                      <PlusCircleIcon className="h-10 w-10" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>添加{idToColumnText[id]}任务</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>
