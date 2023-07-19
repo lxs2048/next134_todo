@@ -1,0 +1,10 @@
+.react-grid-item.react-draggable-dragging {
+  /* 类名来源：源码 */
+  /* 跟随手柄元素样式 */
+  background-color: #fff;
+}
+.react-grid-item.react-grid-placeholder {
+  /* 浮动元素 */
+  background-color: green;
+  opacity: 0.2;
+}
